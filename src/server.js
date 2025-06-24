@@ -5,9 +5,12 @@
  * Mi responsabilidad es inicializar el servidor, conectar a la base de datos
  * y manejar el ciclo de vida de la aplicación de forma segura
  * 
+ * ACTUALIZADO PARA SUB-FASE 2.2: Detección correcta de fase completada
+ * 
  * Funcionalidades actuales:
  * - Inicialización segura del servidor
  * - Conexión a PostgreSQL
+ * - Detección automática de fase completada
  * - Manejo de señales del sistema
  * - Logging de estado del servidor
  */
@@ -22,6 +25,71 @@ const HOST = process.env.HOST || 'localhost';
 
 // Variable para almacenar la instancia del servidor
 let server;
+
+/**
+ * Detectar fase actual del proyecto
+ */
+const detectCurrentPhase = () => {
+  try {
+    // Verificar si existen los modelos (Fase 2.1+)
+    const { models } = require('./models');
+    const hasModels = Object.keys(models).length > 0;
+    
+    if (!hasModels) {
+      return {
+        phase: 'Fase 1',
+        title: 'Configuración Base Completada',
+        next: 'Fase 2: Autenticación'
+      };
+    }
+    
+    // Verificar si Passport.js está configurado (Sub-fase 2.2)
+    try {
+      const { getAvailableStrategies } = require('./config/passport');
+      const strategies = getAvailableStrategies();
+      const hasPassport = strategies && Object.keys(strategies).length > 0;
+      
+      if (hasPassport) {
+        // Verificar si JWT utilities están disponibles (Sub-fase 2.2)
+        try {
+          const { generateAccessToken } = require('./utils/jwt');
+          const hasJWT = typeof generateAccessToken === 'function';
+          
+          if (hasJWT) {
+            return {
+              phase: 'Sub-fase 2.2',
+              title: 'Autenticación y JWT Completada',
+              next: 'Sub-fase 2.3: Controladores de Autenticación'
+            };
+          }
+        } catch (jwtError) {
+          // JWT no disponible
+        }
+        
+        return {
+          phase: 'Fase 2.1',
+          title: 'Modelos de Base de Datos Completados',
+          next: 'Sub-fase 2.2: JWT y OAuth'
+        };
+      }
+    } catch (passportError) {
+      // Passport no disponible
+    }
+    
+    return {
+      phase: 'Fase 2.1',
+      title: 'Modelos de Base de Datos Completados',
+      next: 'Sub-fase 2.2: JWT y OAuth'
+    };
+    
+  } catch (error) {
+    return {
+      phase: 'Fase 1',
+      title: 'Configuración Base Completada',
+      next: 'Fase 2: Autenticación'
+    };
+  }
+};
 
 /**
  * Función para inicializar el servidor de forma segura
@@ -41,16 +109,16 @@ const startServer = async () => {
       process.exit(1);
     }
     
-    // Cargar y validar modelos de Fase 2
+    // Cargar y validar modelos
     console.log('📊 Cargando modelos de base de datos...');
     try {
       const { validateModels, models } = require('./models');
       validateModels();
       const modelNames = Object.keys(models);
-      console.log(`✅ Modelos de Fase 2 cargados correctamente: ${modelNames.join(', ')}`);
+      console.log(`✅ Modelos cargados correctamente: ${modelNames.join(', ')}`);
       console.log(`📈 Total de modelos registrados: ${modelNames.length}`);
     } catch (error) {
-      console.log('⚠️  Modelos de Fase 2 no disponibles:', error.message);
+      console.log('⚠️  Modelos no disponibles:', error.message);
       console.log('💡 Ejecuta migración para crear las tablas: npm run migrate');
     }
     
@@ -60,27 +128,22 @@ const startServer = async () => {
       console.log(`🌐 URL: http://${HOST}:${PORT}`);
       console.log(`🏥 Health Check: http://${HOST}:${PORT}/health`);
       console.log(`💾 DB Status: http://${HOST}:${PORT}/api/db-status`);
+      
+      // NUEVO: Verificar si endpoint de auth está disponible (Sub-fase 2.2)
+      try {
+        const { getAvailableStrategies } = require('./config/passport');
+        console.log(`🔐 Auth Status: http://${HOST}:${PORT}/api/auth-status`);
+      } catch (error) {
+        // Auth status no disponible
+      }
+      
       console.log('==========================================');
       
-      // Detectar fase según modelos disponibles
-      try {
-        const { models } = require('./models');
-        const hasModels = Object.keys(models).length > 0;
-        
-        if (hasModels) {
-          console.log('💪 Elite Fitness Club Backend - Fase 2.1');
-          console.log('🔧 Modelos de Base de Datos Completados');
-          console.log('⏭️  Listo para Sub-fase 2.2: JWT y OAuth');
-        } else {
-          console.log('💪 Elite Fitness Club Backend - Fase 1');
-          console.log('🔧 Configuración Base Completada');
-          console.log('⏭️  Listo para Fase 2: Autenticación');
-        }
-      } catch (error) {
-        console.log('💪 Elite Fitness Club Backend - Fase 1');
-        console.log('🔧 Configuración Base Completada');
-        console.log('⏭️  Listo para Fase 2: Autenticación');
-      }
+      // Detectar fase actual automáticamente
+      const currentPhase = detectCurrentPhase();
+      console.log(`💪 Elite Fitness Club Backend - ${currentPhase.phase}`);
+      console.log(`🔧 ${currentPhase.title}`);
+      console.log(`⏭️  Listo para ${currentPhase.next}`);
       
       console.log('==========================================');
     });
@@ -155,20 +218,32 @@ if (require.main === module) {
 module.exports = { app, startServer, gracefulShutdown };
 
 /**
- * ESTADO ACTUAL - FASE 2.1:
+ * ESTADO ACTUAL - SUB-FASE 2.2:
  * ✅ Servidor Express configurado y funcional
  * ✅ Conexión a PostgreSQL verificada
  * ✅ Modelos de base de datos cargados automáticamente
+ * ✅ Detección automática de fase completada
+ * ✅ Passport.js y JWT verificados automáticamente
+ * ✅ Endpoint de auth-status incluido en logs
  * ✅ Manejo seguro de cierre del servidor
  * ✅ Error handling para excepciones no capturadas
  * ✅ Logging detallado del estado del sistema
  * ✅ Configuración para múltiples entornos
- * ✅ Detección automática de fase según modelos disponibles
  * 
- * PENDIENTE PARA SIGUIENTES SUB-FASES:
- * ⏳ Utilidades JWT y OAuth (Sub-fase 2.2)
- * ⏳ Middleware de autenticación (Sub-fase 2.3)
- * ⏳ Controladores de autenticación (Sub-fase 2.4)
- * ⏳ Rutas protegidas (Sub-fase 2.5)
- * ⏳ Testing completo de autenticación (Sub-fase 2.6)
+ * COMPLETADO EN SUB-FASE 2.2:
+ * ✅ Modelos de BD (User, Client, ClientPreference)
+ * ✅ Utilidades JWT (generación, verificación, renovación)
+ * ✅ Configuración OAuth (Google + Facebook)
+ * ✅ Estrategias Passport.js (JWT, Local, OAuth)
+ * ✅ Middleware de autenticación y autorización
+ * ✅ Middleware de validación de datos
+ * ✅ Integración completa en aplicación principal
+ * ✅ Detección automática de fase completada
+ * 
+ * LISTO PARA SUB-FASE 2.3:
+ * ⏭️ Controladores de autenticación (authController.js)
+ * ⏭️ Controladores de usuario (userController.js)
+ * ⏭️ Rutas de autenticación (routes/auth.js)
+ * ⏭️ Rutas protegidas (routes/users.js, routes/clients.js)
+ * ⏭️ Testing completo de APIs de autenticación
  */
