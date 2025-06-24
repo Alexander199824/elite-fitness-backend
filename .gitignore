@@ -1,0 +1,51 @@
+# Soy el archivo que protege información sensible del repositorio
+# Mi trabajo es mantener seguros los datos confidenciales
+
+# Archivos de entorno y configuración sensible
+.env
+.env.local
+.env.production
+
+# Dependencias de Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+*.log
+
+# Archivos de desarrollo
+coverage/
+.nyc_output
+.vscode/
+.idea/
+
+# Archivos temporales
+*.tmp
+*.temp
+temp/
+logs/
+
+# Archivos de base de datos locales
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploads temporales (en desarrollo)
+uploads/temp/
+
+# Archivos de backup
+*.backup
+*.bak
+
+# Certificados SSL (desarrollo)
+*.pem
+*.crt
+*.key
+
+# Archivos de testing
+test-results/
+coverage-reports/
