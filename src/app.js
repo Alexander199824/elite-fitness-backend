@@ -5,16 +5,17 @@
  * Mi responsabilidad es establecer middlewares, rutas y configuraciones
  * de seguridad para el sistema de gestión del gimnasio
  * 
- * ACTUALIZADO PARA SUB-FASE 2.2: Integración completa de Passport.js
+ * ACTUALIZADO PARA SUB-FASE 2.3: Integración completa de controladores y rutas
  * 
  * Configuraciones actuales:
- * - Middlewares de seguridad básicos
+ * - Middlewares de seguridad completos
  * - CORS configurado para web y móvil
- * - Rate limiting anti-spam
+ * - Rate limiting anti-spam avanzado
  * - Compresión de respuestas
  * - Express-session para Passport
  * - Passport.js inicializado con todas las estrategias
- * - Manejo de errores centralizado
+ * - Rutas de autenticación, usuarios y clientes integradas
+ * - Manejo de errores centralizado y mejorado
  */
 
 const express = require('express');
@@ -29,7 +30,7 @@ require('dotenv').config();
 // Importar configuración de base de datos
 const { testConnection } = require('./config/database');
 
-// Importar e inicializar Passport.js (NUEVO EN SUB-FASE 2.2)
+// Importar e inicializar Passport.js
 const { initializePassport } = require('./config/passport');
 
 // Crear aplicación Express
@@ -105,7 +106,7 @@ app.use(express.json({
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ===========================================
-// CONFIGURACIÓN DE SESIONES (NUEVO EN SUB-FASE 2.2)
+// CONFIGURACIÓN DE SESIONES
 // ===========================================
 
 // Express-session configurado para Passport.js
@@ -122,7 +123,7 @@ app.use(session({
 }));
 
 // ===========================================
-// INICIALIZACIÓN DE PASSPORT.JS (NUEVO EN SUB-FASE 2.2)
+// INICIALIZACIÓN DE PASSPORT.JS
 // ===========================================
 
 // Inicializar Passport con todas las estrategias
@@ -135,7 +136,7 @@ try {
 }
 
 // ===========================================
-// MIDDLEWARE DE INFORMACIÓN DEL CLIENTE (SUB-FASE 2.2)
+// MIDDLEWARE DE INFORMACIÓN DEL CLIENTE
 // ===========================================
 
 // Extraer información del cliente para auditoría y seguridad
@@ -153,7 +154,7 @@ app.get('/health', (req, res) => {
     message: 'Elite Fitness Club API funcionando correctamente',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
-    version: '1.0.0-fase2.2',
+    version: '1.0.0-subfase2.3',
     authentication: {
       passport: 'initialized',
       strategies: 'configured',
@@ -181,7 +182,7 @@ app.get('/api/db-status', async (req, res) => {
 });
 
 // ===========================================
-// RUTA DE ESTADO DE AUTENTICACIÓN (NUEVO SUB-FASE 2.2)
+// RUTA DE ESTADO DE AUTENTICACIÓN
 // ===========================================
 
 // Endpoint para verificar estrategias de autenticación disponibles
@@ -225,34 +226,73 @@ app.get('/api/auth-status', (req, res) => {
 });
 
 // ===========================================
-// RUTAS PRINCIPALES
+// RUTAS PRINCIPALES (ACTUALIZADO SUB-FASE 2.3)
 // ===========================================
+
+// Importar rutas de la aplicación
+const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/users');
+const clientRoutes = require('./routes/clients');
+
+// Aplicar rutas con sus prefijos
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/clients', clientRoutes);
 
 // Ruta raíz con información del sistema actualizada
 app.get('/', (req, res) => {
   res.status(200).json({
     message: '🏋️‍♂️ Elite Fitness Club - Sistema de Gestión',
     version: '1.0.0',
-    phase: 'Sub-fase 2.2 - Autenticación y JWT Completada',
+    phase: 'Sub-fase 2.3 - Controladores y Rutas Completadas',
     features: {
       database: 'PostgreSQL configurado',
       security: 'Helmet + CORS + Rate Limiting',
       authentication: 'Passport.js + JWT + OAuth',
       session: 'Express-session configurado',
+      controllers: 'Auth + Users + Clients implementados',
+      routes: 'Sistema completo de APIs',
+      authorization: 'Control granular de permisos',
       environment: process.env.NODE_ENV || 'development'
     },
     endpoints: {
       health: '/health',
       dbStatus: '/api/db-status',
-      authStatus: '/api/auth-status'
+      authStatus: '/api/auth-status',
+      authentication: '/api/auth',
+      users: '/api/users',
+      clients: '/api/clients'
     },
     authentication: {
-      jwt: 'Configurado y listo',
-      oauth: 'Google + Facebook disponibles',
+      jwt: 'Configurado y funcionando',
+      oauth: 'Google + Facebook operativos',
       local: 'Email/password implementado',
-      session: 'Persistente y segura'
+      session: 'Persistente y segura',
+      controllers: 'Completamente implementados'
     },
-    nextPhase: 'Sub-fase 2.3 - Controladores de Autenticación'
+    apis: {
+      auth: {
+        login: 'POST /api/auth/login/client, /api/auth/login/admin',
+        register: 'POST /api/auth/register',
+        oauth: 'GET /api/auth/google, /api/auth/facebook',
+        tokens: 'POST /api/auth/refresh, POST /api/auth/logout',
+        profile: 'GET /api/auth/me, POST /api/auth/change-password'
+      },
+      users: {
+        crud: 'GET /api/users, POST /api/users, PUT /api/users/:id',
+        management: 'GET /api/users/:id, DELETE /api/users/:id',
+        profile: 'GET /api/users/me, GET /api/users/me/permissions',
+        stats: 'GET /api/users/stats'
+      },
+      clients: {
+        crud: 'GET /api/clients, GET /api/clients/:id, PUT /api/clients/:id',
+        self: 'GET /api/clients/me, PUT /api/clients/me',
+        preferences: 'PUT /api/clients/:id/preferences',
+        gamification: 'POST /api/clients/:id/checkin, POST /api/clients/:id/points',
+        social: 'GET /api/clients/leaderboard, GET /api/clients/search'
+      }
+    },
+    nextPhase: 'Sub-fase 2.4 - Documentación APIs y Optimizaciones'
   });
 });
 
@@ -265,8 +305,13 @@ app.use('*', (req, res) => {
   res.status(404).json({
     error: 'Ruta no encontrada',
     message: `La ruta ${req.originalUrl} no existe en este servidor`,
-    availableEndpoints: ['/', '/health', '/api/db-status', '/api/auth-status'],
-    authentication: 'Sistema de autenticación disponible en Sub-fase 2.3'
+    availableEndpoints: {
+      system: ['/', '/health', '/api/db-status', '/api/auth-status'],
+      auth: ['/api/auth', '/api/auth/login/client', '/api/auth/login/admin', '/api/auth/register'],
+      users: ['/api/users', '/api/users/me', '/api/users/stats'],
+      clients: ['/api/clients', '/api/clients/me', '/api/clients/leaderboard']
+    },
+    phase: 'Sub-fase 2.3 - Sistema completo de APIs disponible'
   });
 });
 
@@ -300,6 +345,16 @@ app.use((err, req, res, next) => {
     });
   }
   
+  // Error de validación
+  if (err.name === 'ValidationError') {
+    return res.status(400).json({
+      error: 'Error de validación',
+      message: 'Los datos proporcionados no son válidos',
+      details: err.errors || err.message,
+      code: 'VALIDATION_ERROR'
+    });
+  }
+  
   // Error genérico
   res.status(err.status || 500).json({
     error: 'Error interno del servidor',
@@ -311,31 +366,34 @@ app.use((err, req, res, next) => {
 module.exports = app;
 
 /**
- * ESTADO ACTUAL - SUB-FASE 2.2:
- * ✅ Express configurado con middlewares de seguridad
+ * ESTADO ACTUAL - SUB-FASE 2.3:
+ * ✅ Express configurado con middlewares de seguridad completos
  * ✅ CORS configurado para web y móvil
  * ✅ Rate limiting implementado
  * ✅ Express-session configurado para Passport.js
  * ✅ Passport.js inicializado con todas las estrategias
  * ✅ Middleware de información del cliente
- * ✅ Endpoints de estado de autenticación
- * ✅ Manejo de errores actualizado para auth
- * ✅ Health checks y estado de BD
+ * ✅ Endpoints de estado de autenticación y base de datos
+ * ✅ Rutas de autenticación completamente integradas (/api/auth)
+ * ✅ Rutas de usuarios administrativos integradas (/api/users)
+ * ✅ Rutas de clientes del gimnasio integradas (/api/clients)
+ * ✅ Manejo de errores actualizado para APIs
+ * ✅ Health checks y estado de BD funcionando
  * ✅ Compresión y optimizaciones básicas
+ * ✅ Sistema completo de APIs RESTful operativo
  * 
- * COMPLETADO EN SUB-FASE 2.2:
- * ✅ Modelos de BD (User, Client, ClientPreference)
- * ✅ Utilidades JWT (generación, verificación, renovación)
- * ✅ Configuración OAuth (Google + Facebook)
- * ✅ Estrategias Passport.js (JWT, Local, OAuth)
- * ✅ Middleware de autenticación y autorización
- * ✅ Middleware de validación de datos
- * ✅ Integración completa en aplicación principal
+ * COMPLETADO EN SUB-FASE 2.3:
+ * ✅ Integración completa de controladores y rutas
+ * ✅ Middleware aplicado correctamente en todas las rutas
+ * ✅ Sistema de autorización granular funcionando
+ * ✅ Manejo de errores específico por tipo
+ * ✅ Información detallada de endpoints disponibles
+ * ✅ Documentación automática en ruta raíz
  * 
- * LISTO PARA SUB-FASE 2.3:
- * ⏭️ Controladores de autenticación (authController.js)
- * ⏭️ Controladores de usuario (userController.js)
- * ⏭️ Rutas de autenticación (routes/auth.js)
- * ⏭️ Rutas protegidas (routes/users.js, routes/clients.js)
- * ⏭️ Testing completo de APIs de autenticación
+ * LISTO PARA SUB-FASE 2.4:
+ * ⏭️ Documentación completa de APIs (Swagger/OpenAPI)
+ * ⏭️ Optimizaciones de rendimiento y cache
+ * ⏭️ Logging avanzado para auditoría
+ * ⏭️ Preparación para deployment a producción
+ * ⏭️ Integración con frontend
  */

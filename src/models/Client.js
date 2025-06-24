@@ -5,6 +5,8 @@
  * Mi responsabilidad es manejar todos los datos de los miembros
  * incluyendo autenticación OAuth, preferencias y datos del gym
  * 
+ * CORREGIDO SUB-FASE 2.3: Agregados métodos faltantes para tests
+ * 
  * Características implementadas:
  * - Autenticación OAuth (Google + Facebook)
  * - Autenticación tradicional email/password
@@ -12,6 +14,7 @@
  * - Información específica del gimnasio
  * - Preferencias de notificaciones
  * - Gestión de membresías
+ * - Métodos de seguridad (isLocked, intentos de login)
  */
 
 const { DataTypes } = require('sequelize');
@@ -233,6 +236,19 @@ const Client = sequelize.define('Client', {
     comment: 'Fecha del último login'
   },
   
+  loginAttempts: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+    allowNull: false,
+    comment: 'Intentos fallidos de login (seguridad)'
+  },
+  
+  lockedUntil: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    comment: 'Fecha hasta la cual está bloqueado'
+  },
+  
   lastCheckIn: {
     type: DataTypes.DATE,
     allowNull: true,
@@ -408,6 +424,32 @@ Client.prototype.validatePassword = async function(password) {
   return await bcrypt.compare(password, this.password);
 };
 
+// Verificar si está bloqueado (ARREGLO PARA TESTS)
+Client.prototype.isLocked = function() {
+  return !!(this.lockedUntil && this.lockedUntil > Date.now());
+};
+
+// Incrementar intentos fallidos (ARREGLO PARA TESTS)
+Client.prototype.incrementLoginAttempts = async function() {
+  const updates = { loginAttempts: (this.loginAttempts || 0) + 1 };
+  
+  // Bloquear después de 5 intentos fallidos
+  if ((this.loginAttempts || 0) + 1 >= 5) {
+    updates.lockedUntil = new Date(Date.now() + 30 * 60 * 1000); // 30 minutos
+  }
+  
+  return await this.update(updates);
+};
+
+// Resetear intentos fallidos (ARREGLO PARA TESTS)
+Client.prototype.resetLoginAttempts = async function() {
+  return await this.update({
+    loginAttempts: 0,
+    lockedUntil: null,
+    lastLogin: new Date()
+  });
+};
+
 // Obtener nombre completo
 Client.prototype.getFullName = function() {
   return `${this.firstName} ${this.lastName}`;
@@ -540,19 +582,21 @@ Client.getTopByPoints = async function(limit = 10) {
 module.exports = Client;
 
 /**
- * ESTADO ACTUAL - FASE 2.1:
+ * ESTADO ACTUAL - CORREGIDO SUB-FASE 2.3:
  * ✅ Modelo Client completo con OAuth
  * ✅ Autenticación múltiple (local + Google + Facebook)
  * ✅ Sistema de gamificación integrado
  * ✅ Preferencias de notificaciones
  * ✅ Datos específicos del gimnasio
  * ✅ Métodos para check-in y puntos
+ * ✅ Métodos de seguridad agregados (isLocked, incrementLoginAttempts, resetLoginAttempts)
  * ✅ Hooks para generación automática de datos
+ * ✅ Campos de seguridad agregados (loginAttempts, lockedUntil)
  * 
- * PENDIENTE EN SIGUIENTES SUB-FASES:
- * ⏳ Modelo ClientPreference (2.1)
- * ⏳ Relaciones entre modelos (2.1)
- * ⏳ Configuración OAuth (2.2)
- * ⏳ Controladores de autenticación (2.4)
- * ⏳ Tests del modelo (2.6)
+ * CORREGIDO PARA TESTS:
+ * ✅ isLocked() - Método para verificar si cuenta está bloqueada
+ * ✅ incrementLoginAttempts() - Método para incrementar intentos fallidos
+ * ✅ resetLoginAttempts() - Método para resetear intentos fallidos
+ * ✅ loginAttempts - Campo para contar intentos fallidos
+ * ✅ lockedUntil - Campo para fecha de bloqueo
  */
