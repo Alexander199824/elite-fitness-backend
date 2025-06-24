@@ -1,0 +1,854 @@
+PS C:\Users\echev\OneDrive\Escritorio\Decimo Semestre\Proyecto de Graduacion II\Desarrollo\elite-fitness-backend> npm test tests/phase2-controllers.test.js
+
+> elite-fitness-backend@1.0.0 test
+> jest --detectOpenHandles --forceExit tests/phase2-controllers.test.js
+
+  console.log
+    ✅ Estrategia Google OAuth configurada
+
+      at Object.log (src/config/passport.js:251:11)
+
+  console.log                                                                                                
+    ✅ Estrategia Facebook OAuth configurada                                                                 
+
+      at Object.log (src/config/passport.js:283:11)
+
+  console.log
+    ✅ Passport.js inicializado correctamente
+
+      at log (src/config/passport.js:296:11)
+
+  console.log                                                                                                
+    📋 Estrategias configuradas: JWT, Local Client, Local User, Google OAuth, Facebook OAuth                 
+
+      at log (src/config/passport.js:307:11)
+
+  console.log                                                                                                
+    ✅ Passport.js inicializado correctamente con todas las estrategias                                      
+
+      at Object.log (src/app.js:132:11)
+
+  console.log
+    🔍 Validando modelos registrados...
+
+      at log (src/models/index.js:150:11)
+
+  console.log                                                                                                
+    📝 Modelos encontrados: User, Client, ClientPreference                                                   
+
+      at log (src/models/index.js:151:11)
+
+  console.log                                                                                                
+    🔗 Verificando relaciones entre modelos...                                                               
+
+      at log (src/models/index.js:162:11)
+
+  console.log                                                                                                
+    ✅ Todos los modelos y relaciones son válidos                                                            
+
+      at log (src/models/index.js:174:11)
+
+  console.log                                                                                                
+    🎯 Modelos inicializados correctamente                                                                   
+
+      at Object.log (src/models/index.js:321:11)
+
+  console.log
+    🔄 Preparando base de datos para tests de controladores...
+
+      at Object.log (tests/phase2-controllers.test.js:58:13)
+
+  console.log                                                                                                
+    🔄 Recreando estructura de base de datos...                                                              
+
+      at log (src/models/index.js:130:13)
+
+  console.log
+    ✅ Base de datos recreada exitosamente
+
+      at log (src/models/index.js:135:13)
+
+  console.log
+    ✅ Usuario administrador creado: superadmin@controllertest.com (super_admin)
+
+      at Function.log (src/models/User.js:213:11)
+
+  console.log
+    ✅ Usuario administrador creado: admin@controllertest.com (admin)
+
+      at Function.log (src/models/User.js:213:11)
+
+  console.log
+    ✅ Usuario administrador creado: staff@controllertest.com (staff)
+
+      at Function.log (src/models/User.js:213:11)
+
+  console.log
+    ✅ Cliente registrado: client1@controllertest.com (local)
+
+      at Function.log (src/models/Client.js:414:11)
+
+  console.log
+    ✅ Cliente registrado: client2@controllertest.com (local)
+
+      at Function.log (src/models/Client.js:414:11)
+
+  console.log
+    ✅ Access token generado para: superadmin@controllertest.com (user)
+
+      at log (src/utils/jwt.js:56:13)
+
+  console.log                                                                                                
+    ✅ Refresh token generado para usuario: 7a87ecca-3f1e-4e96-affe-2d93f16bba69                             
+
+      at log (src/utils/jwt.js:91:13)
+
+  console.log                                                                                                
+    ✅ Access token generado para: admin@controllertest.com (user)                                           
+
+      at log (src/utils/jwt.js:56:13)
+
+  console.log                                                                                                
+    ✅ Refresh token generado para usuario: eeb10844-0524-4dd0-9769-c7ecd477b487                             
+
+      at log (src/utils/jwt.js:91:13)
+
+  console.log                                                                                                
+    ✅ Access token generado para: staff@controllertest.com (user)                                           
+
+      at log (src/utils/jwt.js:56:13)
+
+  console.log
+    ✅ Refresh token generado para usuario: 5ff1ec5c-1aa2-46ee-9402-6d4b2c78f1ab
+
+      at log (src/utils/jwt.js:91:13)
+
+  console.log                                                                                                
+    ✅ Access token generado para: client1@controllertest.com (client)                                       
+
+      at log (src/utils/jwt.js:56:13)
+
+  console.log                                                                                                
+    ✅ Refresh token generado para usuario: ed7c4859-c1ad-4a39-9e55-9c3e8603e55c                             
+
+      at log (src/utils/jwt.js:91:13)
+
+  console.log                                                                                                
+    ✅ Access token generado para: client2@controllertest.com (client)                                       
+
+      at log (src/utils/jwt.js:56:13)
+
+  console.log                                                                                                
+    ✅ Refresh token generado para usuario: 279ff899-2389-4c70-9820-881f6ce351b8                             
+
+      at log (src/utils/jwt.js:91:13)
+
+  console.log                                                                                                
+    ✅ Datos de prueba para controladores creados                                                            
+
+      at Object.log (tests/phase2-controllers.test.js:159:13)
+
+  console.log
+    🔐 Intento de login cliente: client1@controllertest.com
+
+      at log (src/controllers/authController.js:40:13)
+
+  console.log
+    ✅ Login local exitoso: client1@controllertest.com
+
+      at Strategy.log [as _verify] (src/config/passport.js:161:13)
+
+  console.log                                                                                                
+    ✅ Access token generado para: client1@controllertest.com (client)                                       
+
+      at log (src/utils/jwt.js:56:13)
+
+  console.log                                                                                                
+    ✅ Refresh token generado para usuario: ed7c4859-c1ad-4a39-9e55-9c3e8603e55c                             
+
+      at log (src/utils/jwt.js:91:13)
+
+  console.log
+    ✅ Login cliente exitoso: client1@controllertest.com
+
+      at log (src/controllers/authController.js:76:15)
+
+  console.log
+    🔐 Intento de login admin: admin@controllertest.com
+
+      at log (src/controllers/authController.js:121:13)
+
+  console.log
+    ✅ Login admin exitoso: admin@controllertest.com (admin)
+
+      at Strategy.log [as _verify] (src/config/passport.js:215:13)
+
+  console.log                                                                                                
+    ✅ Access token generado para: admin@controllertest.com (user)                                           
+
+      at log (src/utils/jwt.js:56:13)
+
+  console.log                                                                                                
+    ✅ Refresh token generado para usuario: eeb10844-0524-4dd0-9769-c7ecd477b487                             
+
+      at log (src/utils/jwt.js:91:13)
+
+  console.log                                                                                                
+    ✅ Login admin exitoso: admin@controllertest.com (admin)                                                 
+
+      at log (src/controllers/authController.js:152:15)
+
+  console.log
+    🔐 Intento de login cliente: client1@controllertest.com
+
+      at log (src/controllers/authController.js:40:13)
+
+  console.log
+    ❌ Login cliente fallido: client1@controllertest.com - Contraseña incorrecta
+
+      at log (src/controllers/authController.js:53:17)
+
+  console.log
+    📝 Intento de registro: newclient@controllertest.com
+
+      at log (src/controllers/authController.js:205:13)
+
+  console.log
+    ✅ Cliente registrado: newclient@controllertest.com (local)
+
+      at Function.log (src/models/Client.js:414:11)
+
+  console.log
+    ✅ Access token generado para: newclient@controllertest.com (client)
+
+      at log (src/utils/jwt.js:56:13)
+
+  console.log                                                                                                
+    ✅ Refresh token generado para usuario: c9e9b9da-da00-42e7-be05-31692ce84f74                             
+
+      at log (src/utils/jwt.js:91:13)
+
+  console.log                                                                                                
+    ✅ Cliente registrado exitosamente: newclient@controllertest.com                                         
+
+      at log (src/controllers/authController.js:250:13)
+
+  console.log
+    📝 Intento de registro: client1@controllertest.com
+
+      at log (src/controllers/authController.js:205:13)
+
+  console.log
+    ❌ Registro fallido - email existente: client1@controllertest.com
+
+      at log (src/controllers/authController.js:213:15)
+
+  console.log
+    🔐 Cambio de contraseña solicitado: client1@controllertest.com
+
+      at log (src/controllers/authController.js:556:13)
+
+  console.log                                                                                                
+    ❌ Contraseña actual incorrecta: client1@controllertest.com                                              
+
+      at log (src/controllers/authController.js:562:15)
+
+  console.log
+    ✅ Token revocado exitosamente
+
+      at log (src/utils/jwt.js:150:13)
+
+  console.log                                                                                                
+    🔓 Token revocado para usuario: client1@controllertest.com                                               
+
+      at log (src/controllers/authController.js:441:15)
+
+  console.log                                                                                                
+    ✅ Token revocado exitosamente                                                                           
+
+      at log (src/utils/jwt.js:150:13)
+
+  console.log                                                                                                
+    🔓 Refresh token también revocado                                                                        
+
+      at log (src/controllers/authController.js:448:15)
+
+  console.log
+    🔐 Autorización: superadmin@controllertest.com (super_admin) -> user_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log                                                                                                
+    ✅ Autorización por rol: superadmin@controllertest.com (super_admin) accede a recurso admin              
+
+      at log (src/middleware/authorize.js:139:15)
+
+  console.log                                                                                                
+    📋 Listando usuarios - página 1, límite 10
+
+      at log (src/controllers/userController.js:41:13)
+
+  console.log
+    ✅ 3 usuarios listados de 3 totales
+
+      at log (src/controllers/userController.js:103:13)
+
+  console.log
+    🔐 Autorización: admin@controllertest.com (admin) -> user_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log                                                                                                
+    👤 Perfil solicitado: admin@controllertest.com                                                           
+
+      at log (src/controllers/userController.js:563:13)
+
+  console.log
+    🔐 Autorización: superadmin@controllertest.com (super_admin) -> user_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log                                                                                                
+    ✅ Autorización por rol: superadmin@controllertest.com (super_admin) accede a recurso admin              
+
+      at log (src/middleware/authorize.js:139:15)
+
+  console.log                                                                                                
+    👨‍💼 Creando nuevo usuario admin: newadmin@controllertest.com (admin)                                   
+
+      at log (src/controllers/userController.js:244:13)
+
+  console.log
+    ✅ Usuario administrador creado: newadmin@controllertest.com (admin)
+
+      at Function.log (src/models/User.js:213:11)
+
+  console.log                                                                                                
+    ✅ Usuario admin creado: newadmin@controllertest.com (admin) por superadmin@controllertest.com           
+
+      at log (src/controllers/userController.js:288:13)
+
+  console.log
+    🔐 Autorización: admin@controllertest.com (admin) -> user_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log                                                                                                
+    ✅ Autorización por permiso: admin@controllertest.com -> create_users                                    
+
+      at log (src/middleware/authorize.js:170:15)
+
+  console.log                                                                                                
+    👨‍💼 Creando nuevo usuario admin: illegal@controllertest.com (super_admin)                              
+
+      at log (src/controllers/userController.js:244:13)
+
+  console.log                                                                                                
+    ❌ Nivel insuficiente para crear rol super_admin: admin@controllertest.com                               
+
+      at log (src/controllers/userController.js:251:15)
+
+  console.log
+    🔐 Autorización: staff@controllertest.com (staff) -> user_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log                                                                                                
+    ❌ Permiso faltante: staff@controllertest.com intentó view_users                                         
+
+      at log (src/middleware/authorize.js:174:13)
+
+  console.log
+    🔐 Autorización: superadmin@controllertest.com (super_admin) -> user_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log                                                                                                
+    ✅ Autorización por rol: superadmin@controllertest.com (super_admin) accede a recurso admin              
+
+      at log (src/middleware/authorize.js:120:13)
+
+  console.log                                                                                                
+    📊 Estadísticas de usuarios solicitadas por: superadmin@controllertest.com                               
+
+      at log (src/controllers/userController.js:621:13)
+
+  console.log
+    ✅ Estadísticas generadas: 4 usuarios totales
+
+      at log (src/controllers/userController.js:665:13)
+
+  console.log
+    🔐 Autorización: client1@controllertest.com (client) -> client_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log
+    👤 Perfil de cliente solicitado: client1@controllertest.com
+
+      at log (src/controllers/clientController.js:689:13)
+
+  console.log
+    🔐 Autorización: client1@controllertest.com (client) -> client_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log
+    ✏️  Actualizando cliente: ed7c4859-c1ad-4a39-9e55-9c3e8603e55c por client1@controllertest.com
+
+      at log (src/controllers/clientController.js:331:13)
+
+  console.log
+    ✅ Cliente actualizado: client1@controllertest.com por client1@controllertest.com
+
+      at log (src/controllers/clientController.js:378:13)
+
+  console.log
+    🔐 Autorización: client1@controllertest.com (client) -> client_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log
+    🔔 Actualizando preferencias de cliente: ed7c4859-c1ad-4a39-9e55-9c3e8603e55c
+
+      at log (src/controllers/clientController.js:432:13)
+
+  console.log
+    ✅ Preferencias actualizadas para cliente: ed7c4859-c1ad-4a39-9e55-9c3e8603e55c
+
+      at Function.log (src/models/ClientPreference.js:365:11)
+
+  console.log                                                                                                
+    ✅ Preferencias actualizadas para cliente: client1@controllertest.com                                    
+
+      at log (src/controllers/clientController.js:465:15)
+
+  console.log
+    🔐 Autorización: client1@controllertest.com (client) -> client_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log
+    🔐 Autorización: admin@controllertest.com (admin) -> client_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log                                                                                                
+    ✅ Autorización por permiso: admin@controllertest.com -> view_clients                                    
+
+      at log (src/middleware/authorize.js:170:15)
+
+  console.log                                                                                                
+    📋 Listando clientes - página 1, límite 10 por admin@controllertest.com                                  
+
+      at log (src/controllers/clientController.js:57:13)
+
+  console.log
+    ✅ 3 clientes listados de 3 totales
+
+      at log (src/controllers/clientController.js:146:13)
+
+  console.log
+    🔐 Autorización: admin@controllertest.com (admin) -> client_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log
+    ✅ Autorización por permiso: admin@controllertest.com -> view_clients
+
+      at log (src/middleware/authorize.js:170:15)
+
+  console.log                                                                                                
+    👤 Obteniendo cliente: ed7c4859-c1ad-4a39-9e55-9c3e8603e55c por admin@controllertest.com                 
+
+      at log (src/controllers/clientController.js:192:13)
+
+  console.log
+    ✅ Cliente obtenido: client1@controllertest.com (Nivel 1)
+
+      at log (src/controllers/clientController.js:303:13)
+
+  console.log
+    🔐 Autorización: admin@controllertest.com (admin) -> client_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log                                                                                                
+    ✅ Autorización por permiso: admin@controllertest.com -> process_checkins                                
+
+      at log (src/middleware/authorize.js:170:15)
+
+  console.log                                                                                                
+    ✅ Check-in manual para cliente: ed7c4859-c1ad-4a39-9e55-9c3e8603e55c por admin@controllertest.com       
+
+      at log (src/controllers/clientController.js:514:13)
+
+  console.log
+    ✅ Check-in exitoso: client1@controllertest.com - Total: 1, Puntos: 10, Nivel: 1
+
+      at log (src/controllers/clientController.js:561:13)
+
+  console.log
+    🔐 Autorización: admin@controllertest.com (admin) -> client_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log                                                                                                
+    ✅ Autorización por permiso: admin@controllertest.com -> manage_points                                   
+
+      at log (src/middleware/authorize.js:170:15)
+
+  console.log                                                                                                
+    ⭐ Agregando 50 puntos a cliente: ed7c4859-c1ad-4a39-9e55-9c3e8603e55c por admin@controllertest.com      
+
+      at log (src/controllers/clientController.js:604:13)
+
+  console.log
+    ✅ Puntos agregados: client1@controllertest.com - 10 -> 60 puntos, Nivel 1 -> 1
+
+      at log (src/controllers/clientController.js:637:13)
+
+  console.log
+    🔐 Autorización: client1@controllertest.com (client) -> client_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log                                                                                                
+    🏆 Leaderboard solicitado por: client1@controllertest.com                                                
+
+      at log (src/controllers/clientController.js:864:13)
+
+  console.log
+    🔐 Autorización: admin@controllertest.com (admin) -> client_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log                                                                                                
+    ✅ Autorización por permiso: admin@controllertest.com -> view_clients                                    
+
+      at log (src/middleware/authorize.js:170:15)
+
+  console.log                                                                                                
+    🔍 Búsqueda de clientes: "Cliente" por admin@controllertest.com
+
+      at log (src/controllers/clientController.js:915:13)
+
+  console.log
+    ✅ Búsqueda completada: 3 resultados para "Cliente"
+
+      at log (src/controllers/clientController.js:941:13)
+
+  console.log
+    🔐 Autorización: client1@controllertest.com (client) -> client_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log                                                                                                
+    ❌ Permiso faltante: client1@controllertest.com intentó view_clients                                     
+
+      at log (src/middleware/authorize.js:174:13)
+
+  console.log
+    📝 Intento de registro: test@sanitization.com
+
+      at log (src/controllers/authController.js:205:13)
+
+  console.log
+    ✅ Cliente registrado: test@sanitization.com (local)
+
+      at Function.log (src/models/Client.js:414:11)
+
+  console.log
+    ✅ Access token generado para: test@sanitization.com (client)
+
+      at log (src/utils/jwt.js:56:13)
+
+  console.log                                                                                                
+    ✅ Refresh token generado para usuario: 0bb4709b-a4bd-4842-8dbc-45b68871cfb9                             
+
+      at log (src/utils/jwt.js:91:13)
+
+  console.log                                                                                                
+    ✅ Cliente registrado exitosamente: test@sanitization.com                                                
+
+      at log (src/controllers/authController.js:250:13)
+
+  console.log
+    🔐 Autorización: admin@controllertest.com (admin) -> user_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log
+    🔐 Autorización: admin@controllertest.com (admin) -> client_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+  console.log                                                                                                
+    ✅ Permiso encontrado: admin@controllertest.com tiene uno de [view_analytics, manage_clients]            
+
+      at log (src/middleware/authorize.js:306:13)
+
+  console.log
+    📊 Estadísticas de clientes solicitadas por: admin@controllertest.com
+
+      at log (src/controllers/clientController.js:769:13)
+
+  console.log
+    ✅ Estadísticas generadas: 4 clientes totales
+
+      at log (src/controllers/clientController.js:837:13)
+
+  console.log
+    🔐 Autorización: client1@controllertest.com (client) -> client_management
+
+      at log (src/middleware/authorize.js:357:13)
+
+  console.log                                                                                                
+       📱 Cliente: web unknown unknown                                                                       
+
+      at log (src/middleware/authorize.js:358:13)
+
+  console.log                                                                                                
+       🌐 IP: ::ffff:127.0.0.1 | User-Agent: Unknown...                                                      
+
+      at log (src/middleware/authorize.js:359:13)
+
+ PASS  tests/phase2-controllers.test.js (30.204 s)
+  🔐 Elite Fitness Club - Sub-fase 2.3: Controladores y Rutas
+    🔐 Controladores de Autenticación                                                                        
+      √ Debe permitir login de cliente válido (699 ms)                                                       
+      √ Debe permitir login de administrador válido (520 ms)                                                 
+      √ Debe rechazar credenciales inválidas (507 ms)                                                        
+      √ Debe permitir registro de nuevo cliente (675 ms)                                                     
+      √ Debe rechazar registro con email duplicado (152 ms)                                                  
+      √ Debe obtener usuario actual autenticado (289 ms)                                                     
+      √ Debe permitir cambio de contraseña (153 ms)                                                          
+      √ Debe permitir logout seguro (152 ms)                                                                 
+    👥 Controladores de Usuarios Administrativos                                                             
+      √ Super admin debe poder listar todos los usuarios (714 ms)                                            
+      √ Admin debe poder ver su propio perfil (577 ms)                                                       
+      √ Super admin debe poder crear nuevo usuario (790 ms)                                                  
+      √ Admin no debe poder crear super admin (378 ms)                                                       
+      √ Staff no debe poder acceder a gestión de usuarios (435 ms)                                           
+      √ Super admin debe poder obtener estadísticas (1150 ms)                                                
+    👤 Controladores de Clientes                                                                             
+      √ Cliente debe poder ver su propio perfil (486 ms)                                                     
+      √ Cliente debe poder actualizar su propio perfil (734 ms)                                              
+      √ Cliente debe poder actualizar sus preferencias (745 ms)                                              
+      √ Cliente no debe poder ver otros clientes (322 ms)                                                    
+      √ Admin debe poder listar todos los clientes (326 ms)                                                  
+      √ Admin debe poder ver cualquier cliente (457 ms)                                                      
+      √ Staff debe poder hacer check-in de cliente (614 ms)                                                  
+      √ Admin debe poder agregar puntos a cliente (629 ms)                                                   
+      √ Debe obtener leaderboard público (337 ms)                                                            
+      √ Admin debe poder buscar clientes (298 ms)                                                            
+      √ Cliente no debe poder buscar otros clientes (161 ms)                                                 
+    🔗 Integración de Rutas y Middleware                                                                     
+      √ Debe rechazar acceso sin token (8 ms)                                                                
+      √ Debe rechazar token inválido (8 ms)                                                                  
+      √ Debe aplicar rate limiting correctamente (38 ms)                                                     
+      √ Debe validar datos de entrada correctamente (8 ms)                                                   
+      √ Debe sanitizar datos de entrada (655 ms)                                                             
+      √ Debe proporcionar información detallada de endpoints (10 ms)                                         
+      √ Debe manejar errores de forma consistente (295 ms)                                                   
+    📊 Estadísticas y Reportes                                                                               
+      √ Admin debe poder obtener estadísticas de clientes (1389 ms)                                          
+      √ Debe verificar estado de tokens correctamente (147 ms)                                               
+      √ Debe obtener información de gestión contextual (177 ms)                                              
+                                                                                                             
+Test Suites: 1 passed, 1 total                                                                               
+Tests:       35 passed, 35 total                                                                             
+Snapshots:   0 total
+Time:        30.261 s
+Ran all test suites matching /tests\\phase2-controllers.test.js/i.
+PS C:\Use

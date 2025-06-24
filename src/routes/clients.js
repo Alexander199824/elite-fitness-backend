@@ -18,6 +18,12 @@
  * - POST /:id/points - Agregar puntos (solo admins)
  */
 
+/**
+ * RUTAS DE CLIENTES DEL GIMNASIO - ELITE FITNESS CLUB
+ * 
+ * CORREGIDO PARA SUB-FASE 2.3: Todas las rutas implementadas correctamente
+ */
+
 const express = require('express');
 const router = express.Router();
 
@@ -30,7 +36,10 @@ const {
   clientCheckIn,
   addPointsToClient,
   getClientProfile,
-  getClientStats
+  getClientStats,
+  getLeaderboard,
+  searchClients,
+  getClientsInfo
 } = require('../controllers/clientController');
 
 // Importar middleware de autenticación y autorización
@@ -67,12 +76,10 @@ router.use([
 ]);
 
 /**
- * ENDPOINT INFORMATIVO DE GESTIÓN DE CLIENTES
- * GET /api/clients
+ * OBTENER INFORMACIÓN DE GESTIÓN DE CLIENTES
+ * GET /api/clients/info
  */
-router.get('/', [
-  requirePermission('view_clients') // Solo admins pueden listar todos los clientes
-], getClients);
+router.get('/info', getClientsInfo);
 
 /**
  * OBTENER ESTADÍSTICAS DE CLIENTES
@@ -117,6 +124,28 @@ router.put('/me/preferences', [
   req.params.id = req.user.id;
   updateClientPreferences(req, res, next);
 });
+
+/**
+ * OBTENER TOP CLIENTES POR PUNTOS (LEADERBOARD)
+ * GET /api/clients/leaderboard
+ */
+router.get('/leaderboard', getLeaderboard);
+
+/**
+ * BUSCAR CLIENTES POR TÉRMINO
+ * GET /api/clients/search
+ */
+router.get('/search', [
+  requirePermission('view_clients')
+], searchClients);
+
+/**
+ * LISTAR TODOS LOS CLIENTES
+ * GET /api/clients
+ */
+router.get('/', [
+  requirePermission('view_clients') // Solo admins pueden listar todos los clientes
+], getClients);
 
 /**
  * OBTENER CLIENTE ESPECÍFICO
@@ -236,207 +265,6 @@ router.post('/:id/points', [
   requirePermission('manage_points'), // Solo admins pueden agregar puntos manualmente
   sanitizeInput
 ], addPointsToClient);
-
-/**
- * OBTENER TOP CLIENTES POR PUNTOS
- * GET /api/clients/leaderboard
- */
-router.get('/leaderboard', [
-  // Cualquier usuario autenticado puede ver el leaderboard
-], async (req, res) => {
-  try {
-    const { Client } = require('../models');
-    const { limit = 10 } = req.query;
-    
-    console.log(`🏆 Leaderboard solicitado por: ${req.user.email}`);
-    
-    const topClients = await Client.getTopByPoints(parseInt(limit));
-    
-    const leaderboard = topClients.map((client, index) => ({
-      rank: index + 1,
-      id: client.id,
-      firstName: client.firstName,
-      lastName: client.lastName,
-      points: client.points,
-      level: client.level,
-      totalCheckIns: client.totalCheckIns,
-      // Solo mostrar inicial del apellido para privacidad
-      displayName: `${client.firstName} ${client.lastName.charAt(0)}.`
-    }));
-    
-    res.json({
-      success: true,
-      leaderboard,
-      total: leaderboard.length,
-      requestedLimit: parseInt(limit),
-      timestamp: new Date().toISOString()
-    });
-    
-  } catch (error) {
-    console.error('💥 Error en leaderboard:', error.message);
-    
-    res.status(500).json({
-      error: 'Error obteniendo leaderboard',
-      message: 'No se pudo obtener la tabla de posiciones',
-      code: 'LEADERBOARD_ERROR'
-    });
-  }
-});
-
-/**
- * BUSCAR CLIENTES POR TÉRMINO
- * GET /api/clients/search
- */
-router.get('/search', [
-  requirePermission('view_clients')
-], async (req, res) => {
-  try {
-    const { q: searchTerm, limit = 10 } = req.query;
-    
-    if (!searchTerm || searchTerm.length < 2) {
-      return res.status(400).json({
-        error: 'Término de búsqueda requerido',
-        message: 'Debes proporcionar al menos 2 caracteres para buscar',
-        code: 'SEARCH_TERM_TOO_SHORT'
-      });
-    }
-    
-    const { Client } = require('../models');
-    const { Op } = require('sequelize');
-    
-    console.log(`🔍 Búsqueda de clientes: "${searchTerm}" por ${req.user.email}`);
-    
-    const clients = await Client.findAll({
-      where: {
-        [Op.or]: [
-          { firstName: { [Op.iLike]: `%${searchTerm}%` } },
-          { lastName: { [Op.iLike]: `%${searchTerm}%` } },
-          { email: { [Op.iLike]: `%${searchTerm}%` } },
-          { memberNumber: { [Op.iLike]: `%${searchTerm}%` } }
-        ],
-        isActive: true
-      },
-      attributes: ['id', 'email', 'firstName', 'lastName', 'memberNumber', 'points', 'level'],
-      order: [['points', 'DESC']],
-      limit: parseInt(limit)
-    });
-    
-    const searchResults = clients.map(client => ({
-      id: client.id,
-      email: client.email,
-      fullName: `${client.firstName} ${client.lastName}`,
-      memberNumber: client.memberNumber,
-      points: client.points,
-      level: client.level
-    }));
-    
-    console.log(`✅ Búsqueda completada: ${searchResults.length} resultados para "${searchTerm}"`);
-    
-    res.json({
-      success: true,
-      searchTerm,
-      results: searchResults,
-      total: searchResults.length,
-      limit: parseInt(limit),
-      timestamp: new Date().toISOString()
-    });
-    
-  } catch (error) {
-    console.error('💥 Error en búsqueda:', error.message);
-    
-    res.status(500).json({
-      error: 'Error en búsqueda',
-      message: 'No se pudo realizar la búsqueda de clientes',
-      code: 'SEARCH_ERROR'
-    });
-  }
-});
-
-/**
- * ENDPOINT DE INFORMACIÓN DE GESTIÓN DE CLIENTES
- * GET /api/clients/info
- */
-router.get('/info', [], (req, res) => {
-  try {
-    const { getUserPermissions } = require('../middleware/authorize');
-    const userPermissions = getUserPermissions(req.user);
-    const userType = req.user.constructor.name.toLowerCase();
-    
-    const clientEndpoints = {
-      list: 'GET /api/clients - Listar clientes (solo admins)',
-      stats: 'GET /api/clients/stats - Estadísticas (solo admins)',
-      profile: 'GET /api/clients/me - Mi perfil (solo clientes)',
-      updateProfile: 'PUT /api/clients/me - Actualizar mi perfil (solo clientes)',
-      updatePreferences: 'PUT /api/clients/me/preferences - Mis preferencias (solo clientes)',
-      view: 'GET /api/clients/:id - Ver cliente específico (admins o propietario)',
-      update: 'PUT /api/clients/:id - Actualizar cliente (admins o propietario)',
-      preferences: 'PUT /api/clients/:id/preferences - Actualizar preferencias (admins o propietario)',
-      checkin: 'POST /api/clients/:id/checkin - Realizar check-in (solo staff+)',
-      points: 'POST /api/clients/:id/points - Agregar puntos (solo admins)',
-      leaderboard: 'GET /api/clients/leaderboard - Top clientes',
-      search: 'GET /api/clients/search - Buscar clientes (solo admins)'
-    };
-    
-    const capabilities = {
-      canViewAllClients: userPermissions.includes('view_clients'),
-      canUpdateClients: userPermissions.includes('update_clients'),
-      canProcessCheckins: userPermissions.includes('process_checkins'),
-      canManagePoints: userPermissions.includes('manage_points'),
-      canViewStats: userPermissions.includes('view_analytics') || userPermissions.includes('manage_clients'),
-      canSearchClients: userPermissions.includes('view_clients'),
-      canViewOwnProfile: userType === 'client',
-      canUpdateOwnProfile: userType === 'client'
-    };
-    
-    res.json({
-      message: '👥 Elite Fitness Club - Gestión de Clientes',
-      version: '1.0.0 - Sub-fase 2.3',
-      currentUser: {
-        id: req.user.id,
-        email: req.user.email,
-        type: userType,
-        role: req.user.role || null,
-        permissions: userPermissions.length
-      },
-      endpoints: clientEndpoints,
-      capabilities,
-      gamification: {
-        pointsPerCheckin: 10,
-        pointsPerLevel: 100,
-        maxLevel: 'Unlimited'
-      },
-      queryParameters: {
-        list: {
-          page: 'Número de página (default: 1)',
-          limit: 'Items por página (default: 10)',
-          isActive: 'Filtrar por estado (true/false)',
-          isEmailVerified: 'Filtrar por email verificado (true/false)',
-          authProvider: 'Filtrar por proveedor (local, google, facebook)',
-          search: 'Buscar en nombre, apellido, email o número de miembro',
-          minPoints: 'Puntos mínimos',
-          maxPoints: 'Puntos máximos',
-          level: 'Filtrar por nivel específico',
-          sortBy: 'Campo de ordenamiento (default: createdAt)',
-          sortOrder: 'Orden (ASC/DESC, default: DESC)'
-        },
-        leaderboard: {
-          limit: 'Número de top clientes (default: 10, max: 50)'
-        },
-        search: {
-          q: 'Término de búsqueda (mínimo 2 caracteres)',
-          limit: 'Límite de resultados (default: 10)'
-        }
-      },
-      timestamp: new Date().toISOString()
-    });
-    
-  } catch (error) {
-    res.status(500).json({
-      error: 'Error obteniendo información de gestión',
-      message: error.message
-    });
-  }
-});
 
 /**
  * MIDDLEWARE DE MANEJO DE ERRORES ESPECÍFICO PARA CLIENTES

@@ -17,6 +17,19 @@
 /**
  * Jerarquía de roles para administradores
  */
+/**
+ * MIDDLEWARE DE AUTORIZACIÓN - ELITE FITNESS CLUB
+ * 
+ * Soy el middleware encargado del control granular de permisos
+ * Mi responsabilidad es verificar roles, permisos específicos y
+ * autorizar acceso a recursos según el nivel de acceso del usuario
+ * 
+ * CORREGIDO PARA SUB-FASE 2.3: Permisos actualizados según tests
+ */
+
+/**
+ * Jerarquía de roles para administradores
+ */
 const ROLE_HIERARCHY = {
   'super_admin': 4,
   'admin': 3,
@@ -25,7 +38,7 @@ const ROLE_HIERARCHY = {
 };
 
 /**
- * Permisos por defecto según rol
+ * Permisos por defecto según rol - CORREGIDOS
  */
 const DEFAULT_PERMISSIONS = {
   'super_admin': [
@@ -36,7 +49,14 @@ const DEFAULT_PERMISSIONS = {
     'manage_payments',
     'manage_clients',
     'manage_products',
-    'manage_promotions'
+    'manage_promotions',
+    'create_users',
+    'view_users',
+    'update_users',
+    'view_clients',
+    'update_clients',
+    'process_checkins',
+    'manage_points'
   ],
   'admin': [
     'manage_clients',
@@ -44,14 +64,21 @@ const DEFAULT_PERMISSIONS = {
     'manage_payments',
     'view_analytics',
     'manage_promotions',
-    'create_users'
+    'create_users',
+    'view_users',
+    'update_users',
+    'view_clients',
+    'update_clients',
+    'process_checkins',
+    'manage_points'
   ],
   'staff': [
     'view_clients',
     'update_clients',
     'process_payments',
     'view_products',
-    'update_products'
+    'update_products',
+    'process_checkins'
   ],
   'client': [
     'view_own_profile',
@@ -109,6 +136,7 @@ const requirePermission = (permission) => {
     
     // Super admin puede todo
     if (req.user.role === 'super_admin') {
+      console.log(`✅ Autorización por rol: ${req.user.email} (super_admin) accede a recurso admin`);
       return next();
     }
     
@@ -247,6 +275,7 @@ const requireAnyPermission = (permissions) => {
     
     // Super admin puede todo
     if (req.user.role === 'super_admin') {
+      console.log(`✅ Autorización por rol: ${req.user.email} (super_admin) accede a recurso admin`);
       return next();
     }
     

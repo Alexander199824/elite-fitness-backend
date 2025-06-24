@@ -18,6 +18,19 @@
  * - Exportación de datos
  */
 
+/**
+ * CONTROLADOR DE CLIENTES DEL GIMNASIO - ELITE FITNESS CLUB
+ * 
+ * CORREGIDO PARA SUB-FASE 2.3: Todos los métodos implementados
+ * 
+ * Funcionalidades completas:
+ * - CRUD completo de clientes
+ * - Autogestión para clientes
+ * - Check-ins y puntos
+ * - Leaderboard y búsqueda
+ * - Preferencias detalladas
+ */
+
 const { Client, ClientPreference, User } = require('../models');
 const { Op } = require('sequelize');
 
@@ -840,6 +853,180 @@ const getClientStats = async (req, res) => {
   }
 };
 
+/**
+ * OBTENER LEADERBOARD DE CLIENTES
+ * GET /api/clients/leaderboard
+ */
+const getLeaderboard = async (req, res) => {
+  try {
+    const { limit = 10 } = req.query;
+    
+    console.log(`🏆 Leaderboard solicitado por: ${req.user?.email || 'Anónimo'}`);
+    
+    const topClients = await Client.getTopByPoints(parseInt(limit));
+    
+    const leaderboard = topClients.map((client, index) => ({
+      rank: index + 1,
+      id: client.id,
+      firstName: client.firstName,
+      lastName: client.lastName,
+      points: client.points,
+      level: client.level,
+      totalCheckIns: client.totalCheckIns,
+      // Solo mostrar inicial del apellido para privacidad
+      displayName: `${client.firstName} ${client.lastName.charAt(0)}.`
+    }));
+    
+    res.json({
+      success: true,
+      leaderboard,
+      total: leaderboard.length,
+      requestedLimit: parseInt(limit),
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('💥 Error en getLeaderboard:', error.message);
+    
+    res.status(400).json({
+      error: 'Error obteniendo leaderboard',
+      message: 'No se pudo obtener la tabla de posiciones',
+      code: 'LEADERBOARD_ERROR'
+    });
+  }
+};
+
+/**
+ * BUSCAR CLIENTES
+ * GET /api/clients/search
+ */
+const searchClients = async (req, res) => {
+  try {
+    const { q: searchTerm, limit = 10 } = req.query;
+    
+    if (!searchTerm || searchTerm.length < 2) {
+      return res.status(400).json({
+        error: 'Término de búsqueda requerido',
+        message: 'Debes proporcionar al menos 2 caracteres para buscar',
+        code: 'SEARCH_TERM_TOO_SHORT'
+      });
+    }
+    
+    console.log(`🔍 Búsqueda de clientes: "${searchTerm}" por ${req.user.email}`);
+    
+    const clients = await Client.findAll({
+      where: {
+        [Op.or]: [
+          { firstName: { [Op.iLike]: `%${searchTerm}%` } },
+          { lastName: { [Op.iLike]: `%${searchTerm}%` } },
+          { email: { [Op.iLike]: `%${searchTerm}%` } },
+          { memberNumber: { [Op.iLike]: `%${searchTerm}%` } }
+        ],
+        isActive: true
+      },
+      attributes: ['id', 'email', 'firstName', 'lastName', 'memberNumber', 'points', 'level'],
+      order: [['points', 'DESC']],
+      limit: parseInt(limit)
+    });
+    
+    const searchResults = clients.map(client => ({
+      id: client.id,
+      email: client.email,
+      fullName: `${client.firstName} ${client.lastName}`,
+      memberNumber: client.memberNumber,
+      points: client.points,
+      level: client.level
+    }));
+    
+    console.log(`✅ Búsqueda completada: ${searchResults.length} resultados para "${searchTerm}"`);
+    
+    res.json({
+      success: true,
+      searchTerm,
+      results: searchResults,
+      total: searchResults.length,
+      limit: parseInt(limit),
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('💥 Error en searchClients:', error.message);
+    
+    res.status(400).json({
+      error: 'Error en búsqueda',
+      message: 'No se pudo realizar la búsqueda de clientes',
+      code: 'SEARCH_ERROR'
+    });
+  }
+};
+
+/**
+ * OBTENER INFORMACIÓN DE GESTIÓN
+ * GET /api/clients/info
+ */
+const getClientsInfo = async (req, res) => {
+  try {
+    const { getUserPermissions } = require('../middleware/authorize');
+    const userPermissions = getUserPermissions(req.user);
+    const userType = req.user.constructor.name.toLowerCase();
+    
+    const clientEndpoints = {
+      list: 'GET /api/clients - Listar clientes (solo admins)',
+      stats: 'GET /api/clients/stats - Estadísticas (solo admins)',
+      profile: 'GET /api/clients/me - Mi perfil (solo clientes)',
+      updateProfile: 'PUT /api/clients/me - Actualizar mi perfil (solo clientes)',
+      updatePreferences: 'PUT /api/clients/me/preferences - Mis preferencias (solo clientes)',
+      view: 'GET /api/clients/:id - Ver cliente específico (admins o propietario)',
+      update: 'PUT /api/clients/:id - Actualizar cliente (admins o propietario)',
+      preferences: 'PUT /api/clients/:id/preferences - Actualizar preferencias (admins o propietario)',
+      checkin: 'POST /api/clients/:id/checkin - Realizar check-in (solo staff+)',
+      points: 'POST /api/clients/:id/points - Agregar puntos (solo admins)',
+      leaderboard: 'GET /api/clients/leaderboard - Top clientes',
+      search: 'GET /api/clients/search - Buscar clientes (solo admins)'
+    };
+    
+    const capabilities = {
+      canViewAllClients: userPermissions.includes('view_clients'),
+      canUpdateClients: userPermissions.includes('update_clients'),
+      canProcessCheckins: userPermissions.includes('process_checkins'),
+      canManagePoints: userPermissions.includes('manage_points'),
+      canViewStats: userPermissions.includes('view_analytics') || userPermissions.includes('manage_clients'),
+      canSearchClients: userPermissions.includes('view_clients'),
+      canViewOwnProfile: userType === 'client',
+      canUpdateOwnProfile: userType === 'client'
+    };
+    
+    res.json({
+      message: '👥 Elite Fitness Club - Gestión de Clientes',
+      version: '1.0.0 - Sub-fase 2.3',
+      currentUser: {
+        id: req.user.id,
+        email: req.user.email,
+        type: userType,
+        role: req.user.role || null,
+        permissions: userPermissions.length
+      },
+      endpoints: clientEndpoints,
+      capabilities,
+      gamification: {
+        pointsPerCheckin: 10,
+        pointsPerLevel: 100,
+        maxLevel: 'Unlimited'
+      },
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('💥 Error en getClientsInfo:', error.message);
+    
+    res.status(400).json({
+      error: 'Error obteniendo información de gestión',
+      message: error.message,
+      code: 'INFO_ERROR'
+    });
+  }
+};
+
 module.exports = {
   getClients,
   getClient,
@@ -848,7 +1035,10 @@ module.exports = {
   clientCheckIn,
   addPointsToClient,
   getClientProfile,
-  getClientStats
+  getClientStats,
+  getLeaderboard,
+  searchClients,
+  getClientsInfo
 };
 
 /**
